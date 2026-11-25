@@ -1,0 +1,1457 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- ==========================================
+         META INFORMATION
+    ========================================== -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff">
+
+    <title>Khalid Abdullah | Software Engineer</title>
+
+
+    <!-- ==========================================
+         GOOGLE FONTS
+    ========================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ==========================================
+         EXTERNAL CSS & JAVASCRIPT
+    ========================================== -->
+
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <!-- ==========================================
+         PROJECT 01 — POPUP STYLES (SCOPED)
+    ========================================== -->
+    <style>
+        .sorting-project-trigger {
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            border: 0;
+            font: inherit;
+            appearance: none;
+        }
+        .sorting-project-dialog {
+            width: min(92vw, 950px);
+            max-height: min(90vh, 900px);
+            margin: auto;
+            padding: 0;
+            border: 1px solid #d8d8dc;
+            border-radius: 14px;
+            color: #171719;
+            background: #fff;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, .28);
+        }
+        .sorting-project-dialog::backdrop {
+            background: rgba(6, 6, 9, .78);
+            backdrop-filter: blur(7px);
+        }
+        .sorting-project-panel { padding: clamp(22px, 4vw, 48px); font-family: 'Inter', Arial, sans-serif; }
+
+        /* Faded newspaper background - project popup only */
+        .sorting-project-panel {
+            position: relative;
+            isolation: isolate;
+        }
+        .sorting-project-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("assets/newspaper-hero.webp") center top / cover no-repeat;
+            opacity: 0.06;
+            filter: grayscale(1);
+            z-index: -1;
+            pointer-events: none;
+        }
+        html.dark-mode .sorting-project-panel::before {
+            opacity: 0.08;
+            filter: grayscale(1) invert(1);
+        }
+        @media (max-width: 650px) {
+            .sorting-project-panel::before {
+                opacity: 0.045;
+            }
+            html.dark-mode .sorting-project-panel::before {
+                opacity: 0.06;
+            }
+        }
+        .sorting-project-topbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .sorting-project-topbar > span { color: #c91e35; font-size: 10px; font-weight: 800; letter-spacing: .16em; }
+        .sorting-project-close {
+            width: 38px; height: 38px; flex: 0 0 auto; border: 1px solid #dedee1;
+            border-radius: 50%; background: transparent; color: inherit;
+            font-size: 16px; cursor: pointer;
+        }
+        .sorting-project-dialog h2 {
+            margin: 24px 0 15px; font-size: clamp(32px, 5.5vw, 66px);
+            font-weight: 900; line-height: 1.06; letter-spacing: -.055em;
+        }
+        .sorting-project-dialog h2 span { color: #c91e35; }
+        .sorting-project-lead { max-width: 700px; color: #666670; line-height: 1.8; font-size: 14px; }
+        .sorting-project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 30px; }
+        .sorting-project-tags span { border: 1px solid #dedee1; border-radius: 4px; padding: 9px 11px; font-size: 11px; font-weight: 700; }
+        .sorting-project-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+        .sorting-project-gallery figure { min-width: 0; }
+        .sorting-project-gallery img { display: block; width: 100%; height: auto; border-radius: 7px; border: 1px solid #dedee1; background: #ededee; }
+        .sorting-project-gallery figcaption { padding-top: 8px; color: #666670; font-size: 11px; }
+        .sorting-project-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 35px; margin-top: 35px; }
+        .sorting-project-dialog h3 { font-size: 20px; font-weight: 900; letter-spacing: -.035em; margin-bottom: 13px; }
+        .sorting-project-dialog section p, .sorting-project-dialog li { color: #666670; font-size: 13px; line-height: 1.8; }
+        .sorting-project-dialog ul { padding-left: 19px; }
+        .sorting-project-algorithms { margin-top: 26px; }
+        .sorting-project-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+        .sorting-project-actions a, .sorting-project-actions button {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-height: 44px; padding: 12px 18px; font: inherit; font-size: 11px;
+            font-weight: 800; letter-spacing: .04em; text-decoration: none; cursor: pointer;
+            border: 1px solid #171719; border-radius: 4px;
+        }
+        .sorting-project-actions a { background: #c91e35; border-color: #c91e35; color: #fff; }
+        .sorting-project-actions button { background: transparent; color: inherit; }
+        html.dark-mode .sorting-project-dialog {
+            color: #f6f6f7; background: #18181d; border-color: #414149;
+        }
+        html.dark-mode .sorting-project-lead,
+        html.dark-mode .sorting-project-gallery figcaption,
+        html.dark-mode .sorting-project-dialog section p,
+        html.dark-mode .sorting-project-dialog li { color: #b5b5bf; }
+        html.dark-mode .sorting-project-tags span,
+        html.dark-mode .sorting-project-close,
+        html.dark-mode .sorting-project-gallery img { border-color: #47474e; }
+        html.dark-mode .sorting-project-actions button { border-color: #777780; color: #fff; }
+        .sorting-project-trigger:focus-visible,
+        .sorting-project-dialog button:focus-visible,
+        .sorting-project-dialog a:focus-visible { outline: 3px solid #c91e35; outline-offset: 4px; }
+        @media (max-width: 650px) {
+            .sorting-project-dialog { width: 95vw; max-height: 92dvh; }
+            .sorting-project-gallery, .sorting-project-info-grid { grid-template-columns: 1fr; }
+            .sorting-project-info-grid { gap: 24px; }
+        }
+    </style>
+
+
+</head>
+
+
+<body>
+
+    <!-- ==========================================
+         PAGE 01 — HERO SECTION
+         Spider-Man interactive introduction
+    ========================================== -->
+
+    <main class="hero" id="home">
+        <!-- TOP CENTER RESUME BUTTON -->
+
+<a
+    href="assets/Khalid_Abdullah_Resume.pdf"
+    download="Khalid_Abdullah_Resume.pdf"
+    class="resume-download"
+>
+    <span class="resume-download-text">
+        DOWNLOAD RESUME
+    </span>
+
+    <span class="resume-download-icon">
+        ↓
+    </span>
+</a>
+
+<!-- =====================================
+     LIGHT / NIGHT MODE TOGGLE
+===================================== -->
+
+<button
+    class="theme-toggle"
+    id="themeToggle"
+    type="button"
+    aria-label="Enable night mode"
+    aria-pressed="false"
+>
+    <span class="theme-sun" aria-hidden="true">☀</span>
+    <span class="theme-moon" aria-hidden="true">☾</span>
+</button>
+
+
+        <!-- INTRODUCTION CONTENT -->
+        <section class="intro" aria-label="Introduction">
+
+            <!-- Small heading above name -->
+            <div class="intro-kicker">
+                <span class="red-dot" aria-hidden="true"></span>
+                BEHIND THE MASK
+            </div>
+
+
+            <!-- Main name heading -->
+            <div class="intro-title-wrap">
+
+                <!-- Decorative floating elements -->
+                <span class="intro-float float-one" aria-hidden="true"></span>
+                <span class="intro-float float-two" aria-hidden="true"></span>
+
+                <h1 class="intro-title">
+                    <span class="name-first">&lt;Khalid</span>
+
+                    <span class="name-last">
+                        Abdullah&gt;<span class="title-period">.</span>
+                    </span>
+                </h1>
+
+            </div>
+
+
+            <!-- Professional title -->
+            <p class="intro-role">
+                Software Engineer
+                <span class="role-divider">|</span>
+                Developer
+            </p>
+
+
+            <!-- Short personal introduction -->
+            <p class="intro-description">
+                I am Khalid Abdullah, a Software Engineer working at the intersection
+                 of innovation, design, and technology
+                 committed to creating seamless digital 
+                  and solving real world challenges.
+            </p>
+
+
+            <!-- Decorative accent -->
+            <span class="intro-accent" aria-hidden="true"></span>
+
+        </section>
+
+
+
+        <!-- ======================================
+             SPIDER-MAN ARTWORK
+             Interactive face reveal area
+        ====================================== -->
+
+        <div class="artwork" id="artwork">
+
+            <!-- Spider-Man illustration -->
+            <img
+                class="spiderman"
+                src="assets/spiderman.png"
+                alt="Spider-Man illustration"
+                draggable="false"
+            >
+
+
+            <!-- Face reveal window controlled by JS -->
+            <div
+                class="face-window"
+                id="faceWindow"
+                aria-hidden="true"
+            >
+
+                <img
+                    class="my-face"
+                    src="assets/my-face.png"
+                    alt=""
+                    draggable="false"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ======================================
+             SCROLL TO NEXT SECTION
+        ====================================== -->
+
+        <aside class="scroll-intro" aria-label="Explore portfolio">
+
+            <span class="scroll-label">
+                THERE'S MORE TO THE STORY
+            </span>
+
+            <h2>
+                Want to know<br>
+                more about <span>me?</span>
+            </h2>
+
+            <!-- Navigation to technology stack -->
+            <a href="#about" class="scroll-link">
+
+                <span class="scroll-arrow" aria-hidden="true">
+                    ↓
+                </span>
+
+                <span>SCROLL TO EXPLORE</span>
+
+            </a>
+
+        </aside>
+
+
+        <!-- Cursor interaction instruction -->
+        <p class="hint">
+            MOVE YOUR CURSOR OVER THE MASK
+        </p>
+
+    </main>
+
+
+
+    <!-- ==========================================
+         PAGE 02 — TECHNOLOGY STACK
+         Three-column skills layout
+    ========================================== -->
+
+    <section
+        class="about-section"
+        id="about"
+        aria-labelledby="technology-title"
+    >
+
+        <!-- Chapter indicator -->
+        <div class="chapter-header">
+
+            <span class="chapter-line" aria-hidden="true"></span>
+            <span class="chapter-number">CHAPTER 01</span>
+
+        </div>
+
+
+        <!-- Section heading -->
+        <div class="tech-heading">
+
+            <h2 id="technology-title">
+                Technology <span>Stack.</span>
+            </h2>
+
+            <p>
+                The tools and technologies behind my work.
+            </p>
+
+        </div>
+
+
+
+        <!-- ======================================
+             TECHNOLOGY GRID
+             Contains three skill categories
+        ====================================== -->
+
+        <div class="tech-grid">
+
+
+            <!-- ----------------------------------
+                 COLUMN 01 — WEB DEVELOPMENT
+            ---------------------------------- -->
+
+            <article class="tech-column">
+
+                <span class="tech-line" aria-hidden="true"></span>
+
+                <h3>
+                    Web<br>
+                    Development
+                </h3>
+
+                <p class="tech-description">
+                    Building responsive websites, interactive
+                    interfaces and modern web experiences.
+                </p>
+
+
+                <!-- Web development skills -->
+                <div class="tech-tags">
+
+                    <span class="featured">HTML5</span>
+                    <span>CSS3</span>
+                    <span class="featured">JavaScript</span>
+
+                    <span>Responsive Design</span>
+                    <span>DOM Manipulation</span>
+                    <span>CSS Animations</span>
+
+                    <span>Flexbox &amp; Grid</span>
+                    <span>Git &amp; GitHub</span>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- ----------------------------------
+                 COLUMN 02 — PROGRAMMING
+            ---------------------------------- -->
+
+            <article class="tech-column">
+
+                <span class="tech-line" aria-hidden="true"></span>
+
+                <h3>
+                    Programming<br>
+                    &amp; Problem Solving
+                </h3>
+
+                <p class="tech-description">
+                    Exploring programming languages, data
+                    structures, algorithms and efficient
+                    problem solving.
+                </p>
+
+
+                <!-- Programming skills -->
+                <div class="tech-tags">
+
+                    <span class="featured">Java</span>
+                    <span>Python</span>
+                    <span>C++</span>
+                    <span>Java</span>
+                    <span>Data Structures</span>
+                    <span>Algorithms</span>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- ----------------------------------
+                 COLUMN 03 — TOOLS & TECHNOLOGIES
+            ---------------------------------- -->
+
+            <article class="tech-column">
+
+                <span class="tech-line" aria-hidden="true"></span>
+
+                <h3>
+                    Tools &amp;<br>
+                    Technologies
+                </h3>
+
+                <p class="tech-description">
+                    Tools and technologies that support my
+                    development workflow and projects.
+                </p>
+
+
+                <!-- Development tools -->
+                <div class="tech-tags">
+
+                    <span class="featured">Git &amp; GitHub</span>
+                    <span>VS Code</span>
+                    <span>Linux</span>
+                    <span>SQL</span>
+                    <span>REST APIs</span>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         PAGE 03 — EDUCATIONAL BACKGROUND
+         Responsive curved education roadmap
+
+         Desktop: Horizontal curved path
+         Mobile:  Vertical curved path
+    ========================================== -->
+
+    <section
+        class="education-section"
+        id="education"
+        aria-labelledby="education-title"
+    >
+
+        <!-- Chapter indicator -->
+        <div class="chapter-header">
+
+            <span class="chapter-line" aria-hidden="true"></span>
+            <span class="chapter-number">CHAPTER 02</span>
+
+        </div>
+
+
+        <!-- Section heading -->
+        <div class="education-heading">
+
+            <h2 id="education-title">
+                Educational <span>Background.</span>
+            </h2>
+
+            <p>
+                The journey that shaped my foundation.
+            </p>
+
+        </div>
+
+
+
+        <!-- ======================================
+             EDUCATION ROADMAP CONTAINER
+        ====================================== -->
+
+        <div
+            class="education-roadmap-wrap"
+            aria-label="Educational journey from Class X to Master's degree"
+        >
+
+            <div class="education-roadmap">
+
+
+                <!-- ==================================
+                     DESKTOP ROADMAP SVG
+
+                     Horizontal curved path.
+                     Four circular markers represent
+                     the four education milestones.
+                ================================== -->
+
+                <svg
+                    class="roadmap-svg roadmap-svg-desktop"
+                    viewBox="0 0 1200 520"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                >
+
+                    <!-- Background road -->
+                    <path
+                        class="roadmap-path-bg"
+                        d="M40 280 C90 250 135 180 190 205 C300 240 355 390 465 320 C575 250 620 135 740 195 C850 260 900 385 1010 310 C1070 265 1120 245 1160 280"
+                    />
+
+                    <!-- Main visible road -->
+                    <path
+                        class="roadmap-path-main"
+                        d="M40 280 C90 250 135 180 190 205 C300 240 355 390 465 320 C575 250 620 135 740 195 C850 260 900 385 1010 310 C1070 265 1120 245 1160 280"
+                    />
+
+
+                    <!-- Education milestone markers -->
+                    <g class="roadmap-markers">
+
+                        <circle cx="190" cy="205" r="12"/>
+                        <circle cx="465" cy="320" r="12"/>
+                        <circle cx="740" cy="195" r="12"/>
+                        <circle cx="1010" cy="310" r="12"/>
+
+                    </g>
+
+                </svg>
+
+
+
+                <!-- ==================================
+                     MOBILE ROADMAP SVG
+
+                     Vertical curved path.
+                     Shown only on mobile using CSS.
+
+                     Markers share their intended
+                     coordinates with the road path.
+                ================================== -->
+
+                <svg
+                    class="roadmap-svg roadmap-svg-mobile"
+                    viewBox="0 0 360 960"
+                    preserveAspectRatio="xMinYMin meet"
+                    aria-hidden="true"
+                >
+
+                    <!-- Background road -->
+                    <path
+                        class="roadmap-path-bg"
+                        d="M60 120 C15 185 105 280 60 350 C15 420 105 510 60 580 C15 650 105 740 60 810 C48 835 50 855 60 885"
+                    />
+
+                    <!-- Main visible road -->
+                    <path
+                        class="roadmap-path-main"
+                        d="M60 120 C15 185 105 280 60 350 C15 420 105 510 60 580 C15 650 105 740 60 810 C48 835 50 855 60 885"
+                    />
+
+
+                    <!-- Education milestone markers -->
+                    <g class="roadmap-markers">
+
+                        <circle cx="60" cy="120" r="12"/>
+                        <circle cx="60" cy="350" r="12"/>
+                        <circle cx="60" cy="580" r="12"/>
+                        <circle cx="60" cy="810" r="12"/>
+
+                    </g>
+
+                </svg>
+
+
+
+                <!-- ==================================
+                     MILESTONE 01 — CLASS X
+                ================================== -->
+
+                <article class="roadmap-item item-1 top">
+
+                    <div class="roadmap-details">
+
+                        <span class="roadmap-step">
+                            SECONDARY
+                        </span>
+
+                        <h3>Class X</h3>
+
+                        <p>National Public School , Delhi </p>
+
+                        <span class="roadmap-year">
+                            2019
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- ==================================
+                     MILESTONE 02 — CLASS XII
+                ================================== -->
+
+                <article class="roadmap-item item-2 bottom">
+
+                    <div class="roadmap-details">
+
+                        <span class="roadmap-step">
+                            HIGHER SECONDARY
+                        </span>
+
+                        <h3>Class XII</h3>
+
+                        <p>National Public School</p>
+
+                        <span class="roadmap-year">
+                            2021
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- ==================================
+                     MILESTONE 03 — BACHELOR'S
+                ================================== -->
+
+                <article class="roadmap-item item-3 top">
+
+                    <div class="roadmap-details">
+
+                        <span class="roadmap-step">
+                            UNDERGRADUATE
+                        </span>
+
+                        <h3>Bachelors of Commerce</h3>
+
+                        <p>Chaudhary Charan Singh</p>
+
+                        <span class="roadmap-year">
+                            2022 — 2025
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- ==================================
+                     MILESTONE 04 — MASTER'S
+                ================================== -->
+
+                <article class="roadmap-item item-4 bottom">
+
+                    <div class="roadmap-details">
+
+                        <span class="roadmap-step">
+                            POSTGRADUATE
+                        </span>
+
+                        <h3>Masters of Computer Application</h3>
+
+                        <p>Jamia Millia Islamia</p>
+
+                        <span class="roadmap-year">
+                            2026 — 2028
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+            </div> <!-- End education-roadmap -->
+
+        </div> <!-- End education-roadmap-wrap -->
+
+    </section> <!-- End education-section -->
+
+<!-- ==========================================
+     PAGE 04 — PROFESSIONAL EXPERIENCE
+     CHAPTER 03: FREELANCE ACTIVITY
+========================================== -->
+
+<section
+    class="experience-section"
+    id="experience"
+    aria-labelledby="experience-title"
+>
+
+    <!-- Chapter indicator -->
+    <div class="chapter-header">
+
+        <span class="chapter-line" aria-hidden="true"></span>
+        <span class="chapter-number">CHAPTER 03</span>
+
+    </div>
+
+
+    <!-- Section heading -->
+    <div class="experience-heading">
+
+        <h2 id="experience-title">
+            My <span>Experience.</span>
+        </h2>
+
+        <p>
+            Turning ideas into real-world digital experiences.
+        </p>
+
+    </div>
+
+
+    <!-- Freelance experience -->
+    <div class="experience-content">
+
+        <article class="experience-item">
+
+            <!-- Experience index -->
+            <div class="experience-index">
+                <span>FREELANCE</span>
+            </div>
+
+
+            <!-- Main experience information -->
+            <div class="experience-info">
+
+                <h3>
+                    Freelance <span>Developer.</span>
+                </h3>
+
+                <p class="experience-description">
+                    Working independently on creative development
+                    projects, transforming ideas into responsive,
+                    functional, and visually engaging digital
+                    experiences.
+                </p>
+
+
+                <!-- Areas of freelance work -->
+                <div class="experience-tags">
+
+                    <span>Web Development</span>
+                    <span>Frontend Development</span>
+                    <span>Responsive Design</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Decorative arrow -->
+            <div class="experience-arrow" aria-hidden="true">
+                ↗
+            </div>
+
+        </article>
+
+    </div>
+
+<!-- ==========================================
+     UPSIDE-DOWN SPIDER-MAN ANIMATION
+========================================== -->
+
+
+<!-- Spider-Man hanging using original PNG web -->
+<div class="experience-spiderman" aria-hidden="true">
+
+    <img
+        src="assets/spiderman1.png"
+        class="hanging-spiderman"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+
+</section>
+
+<!-- ==========================================
+     CHAPTER 04 — PROJECTS & CERTIFICATIONS
+     Interactive folder-style navigation
+========================================== -->
+
+<section
+    class="portfolio-section"
+    id="projects"
+    aria-labelledby="portfolio-title"
+>
+
+    <!-- Chapter number -->
+    <div class="chapter-header">
+        <span class="chapter-line" aria-hidden="true"></span>
+        <span class="chapter-number">CHAPTER 04</span>
+    </div>
+
+    <!-- Main heading -->
+    <div class="portfolio-heading">
+
+        <h2 id="portfolio-title">
+            Projects <span>&amp; Certifications.</span>
+        </h2>
+
+        <p>
+            A collection of things I've built and learned.
+        </p>
+
+    </div>
+
+
+    <!-- ======================================
+         PART 01 — PROJECT FOLDERS
+    ====================================== -->
+
+    <div class="folder-section">
+
+        <div class="folder-section-heading">
+            <span>SELECTED WORK</span>
+            <h3>Featured <em>Projects.</em></h3>
+            <p>
+                Explore my development projects.
+                Select a folder to open.
+            </p>
+        </div>
+
+
+        <div class="folder-grid">
+
+            <!-- Project 01 -->
+            <button
+                class="folder-card sorting-project-trigger"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls="sortingProjectDialog"
+                aria-label="View Sorting Algorithm Visualizer project details"
+            >
+                <div class="folder-tab"></div>
+
+                <div class="folder-body">
+                    <span class="folder-index">PROJECT-1</span>
+
+                    <div class="folder-bottom">
+                        <h4>Sorting Algorithm Visualizer</h4>
+                        <span class="folder-arrow" aria-hidden="true">↗</span>
+                    </div>
+                </div>
+
+                <div class="folder-meta">
+                    <span>Java · JavaFX</span>
+                    <span>View Project ↗</span>
+                </div>
+            </button>
+
+
+        
+        </div>
+
+        <!-- ======================================
+             PROJECT 01 — ON-PAGE DETAILS POPUP
+             Keeps visitors inside this portfolio
+        ====================================== -->
+        <dialog class="sorting-project-dialog" id="sortingProjectDialog" aria-labelledby="sortingProjectTitle">
+            <div class="sorting-project-panel">
+                <div class="sorting-project-topbar">
+                    <span>PROJECT-1 &nbsp;·&nbsp; DESKTOP APPLICATION</span>
+                    <button type="button" class="sorting-project-close" aria-label="Close project details">✕</button>
+                </div>
+
+                <h2 id="sortingProjectTitle">Sorting Algorithm <span>Visualizer.</span></h2>
+                <p class="sorting-project-lead">
+                    An interactive JavaFX desktop application for understanding how sorting
+                    algorithms work through animated bars, operation highlights, and live statistics.
+                </p>
+
+                <div class="sorting-project-tags">
+                    <span>Java</span><span>JavaFX</span><span>Maven</span><span>Data Structures &amp; Algorithms</span>
+                </div>
+
+                <div class="sorting-project-gallery">
+                    <figure>
+                        <img loading="lazy"
+                             src="https://raw.githubusercontent.com/abdkhalidabdullah123-ship-it/Sorting-Algorithm-Visualizer/main/docs/screenshots/sorting-in-progress.png"
+                             alt="Sorting Algorithm Visualizer displaying an algorithm in progress">
+                        <figcaption>Sorting in progress</figcaption>
+                    </figure>
+                    <figure>
+                        <img loading="lazy"
+                             src="https://raw.githubusercontent.com/abdkhalidabdullah123-ship-it/Sorting-Algorithm-Visualizer/main/docs/screenshots/sorting-completed.png"
+                             alt="Sorting Algorithm Visualizer after sorting completes">
+                        <figcaption>Sorting completed</figcaption>
+                    </figure>
+                </div>
+
+                <div class="sorting-project-info-grid">
+                    <section>
+                        <h3>About the project</h3>
+                        <p>
+                            Sorting algorithms are easier to understand when you can watch
+                            each comparison, swap, and write. This app visualizes those
+                            operations while letting users control playback and speed.
+                        </p>
+                    </section>
+                    <section>
+                        <h3>Key features</h3>
+                        <ul>
+                            <li>Animated sorting with highlighted operations</li>
+                            <li>Start, pause, resume, reset, and generate array</li>
+                            <li>Adjustable speed and live operation statistics</li>
+                            <li>Resizable visualization with different array sizes</li>
+                        </ul>
+                    </section>
+                </div>
+
+                <section class="sorting-project-algorithms">
+                    <h3>Sorting algorithms</h3>
+                    <p>Bubble Sort · Selection Sort · Insertion Sort · Merge Sort · Quick Sort</p>
+                </section>
+
+                <div class="sorting-project-actions">
+                    <a href="https://github.com/abdkhalidabdullah123-ship-it/Sorting-Algorithm-Visualizer"
+                       target="_blank" rel="noopener noreferrer">VIEW SOURCE ON GITHUB ↗</a>
+                    <button type="button" class="sorting-project-done">BACK TO PROJECTS ↑</button>
+                </div>
+            </div>
+        </dialog>
+
+    </div>
+
+
+
+    <!-- ======================================
+         PART 02 — CERTIFICATION FOLDERS
+    ====================================== -->
+
+    <div
+        class="folder-section certification-folder-section"
+        id="certifications"
+    >
+
+        <div class="folder-section-heading">
+            <span>02 / CREDENTIALS</span>
+            <h3>My <em>Certifications.</em></h3>
+            <p>
+                A record of continuous learning.
+                Select a folder to view its certificate.
+            </p>
+        </div>
+
+
+        <div class="folder-grid">
+
+            <!-- Certificate 01 -->
+            <a
+                class="folder-card certificate-folder"
+                href="https://example.com/certificate-1"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Certificate 01"
+            >
+                <div class="folder-tab"></div>
+
+                <div class="folder-body">
+                    <span class="folder-index">CERTIFICATE / 01</span>
+
+                    <div class="folder-bottom">
+                        <h4>Certification One</h4>
+                        <span class="folder-arrow" aria-hidden="true">↗</span>
+                    </div>
+                </div>
+
+                <div class="folder-meta">
+                    <span>Issuing Organization</span>
+                    <span>View Certificate ↗</span>
+                </div>
+            </a>
+                        <!-- Certificate 01 -->
+            <a
+                class="folder-card certificate-folder"
+                href="https://example.com/certificate-1"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Certificate 01"
+            >
+                <div class="folder-tab"></div>
+
+                <div class="folder-body">
+                    <span class="folder-index">CERTIFICATE / 01</span>
+
+                    <div class="folder-bottom">
+                        <h4>Certification One</h4>
+                        <span class="folder-arrow" aria-hidden="true">↗</span>
+                    </div>
+                </div>
+
+                <div class="folder-meta">
+                    <span>Issuing Organization</span>
+                    <span>View Certificate ↗</span>
+                </div>
+            </a>
+                        <!-- Certificate 01 -->
+            <a
+                class="folder-card certificate-folder"
+                href="https://example.com/certificate-1"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Certificate 01"
+            >
+                <div class="folder-tab"></div>
+
+                <div class="folder-body">
+                    <span class="folder-index">CERTIFICATE / 01</span>
+
+                    <div class="folder-bottom">
+                        <h4>Certification One</h4>
+                        <span class="folder-arrow" aria-hidden="true">↗</span>
+                    </div>
+                </div>
+
+                <div class="folder-meta">
+                    <span>Issuing Organization</span>
+                    <span>View Certificate ↗</span>
+                </div>
+            </a>
+                        <!-- Certificate 01 -->
+            <a
+                class="folder-card certificate-folder"
+                href="https://example.com/certificate-1"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Certificate 01"
+            >
+                <div class="folder-tab"></div>
+
+                <div class="folder-body">
+                    <span class="folder-index">CERTIFICATE / 01</span>
+
+                    <div class="folder-bottom">
+                        <h4>Certification One</h4>
+                        <span class="folder-arrow" aria-hidden="true">↗</span>
+                    </div>
+                </div>
+
+                <div class="folder-meta">
+                    <span>Issuing Organization</span>
+                    <span>View Certificate ↗</span>
+                </div>
+            </a>
+                        <!-- Certificate 01 -->
+            <a
+                class="folder-card certificate-folder"
+                href="https://example.com/certificate-1"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Certificate 01"
+            >
+                <div class="folder-tab"></div>
+
+                <div class="folder-body">
+                    <span class="folder-index">CERTIFICATE / 01</span>
+
+                    <div class="folder-bottom">
+                        <h4>Certification One</h4>
+                        <span class="folder-arrow" aria-hidden="true">↗</span>
+                    </div>
+                </div>
+
+                <div class="folder-meta">
+                    <span>Issuing Organization</span>
+                    <span>View Certificate ↗</span>
+                </div>
+            </a>
+
+
+            <!-- Certificate 02 -->
+            <a
+                class="folder-card certificate-folder"
+                href="https://example.com/certificate-2"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Certificate 02"
+            >
+                <div class="folder-tab"></div>
+
+                <div class="folder-body">
+                    <span class="folder-index">CERTIFICATE / 02</span>
+
+                    <div class="folder-bottom">
+                        <h4>Certification Two</h4>
+                        <span class="folder-arrow" aria-hidden="true">↗</span>
+                    </div>
+                </div>
+
+                <div class="folder-meta">
+                    <span>Issuing Organization</span>
+                    <span>View Certificate ↗</span>
+                </div>
+            </a>
+
+
+            <!-- Certificate 03 -->
+            <a
+                class="folder-card certificate-folder"
+                href="https://example.com/certificate-3"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Certificate 03"
+            >
+                <div class="folder-tab"></div>
+
+                <div class="folder-body">
+                    <span class="folder-index">CERTIFICATE / 03</span>
+
+                    <div class="folder-bottom">
+                        <h4>Certification Three</h4>
+                        <span class="folder-arrow" aria-hidden="true">↗</span>
+                    </div>
+                </div>
+
+                <div class="folder-meta">
+                    <span>Issuing Organization</span>
+                    <span>View Certificate ↗</span>
+                </div>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     CHAPTER 05 — CONTACT & DM CHAT
+========================================== -->
+
+<section class="contact-section" id="contact">
+
+    <div class="chapter-header">
+        <span class="chapter-line"></span>
+        <span class="chapter-number">CHAPTER 05</span>
+    </div>
+
+    <div class="contact-heading">
+        <h2>Let's <span>Connect.</span></h2>
+        <p>Every great project starts with a conversation.</p>
+    </div>
+
+
+    <div class="contact-layout">
+
+        <!-- ==============================
+             LEFT — SOCIAL MEDIA DETAILS
+        ============================== -->
+
+        <div class="contact-left">
+
+            <span class="contact-small-label">
+                FIND ME ONLINE
+            </span>
+
+            <h3>
+                Let's build<br>
+                something <span>great.</span>
+            </h3>
+
+            <p class="contact-intro">
+                Whether it's a creative idea, a development
+                project, or simply a conversation,
+                my inbox is always open.
+            </p>
+
+            <div class="contact-social-list">
+
+                <a href="https://github.com/abdkhalidabdullah123-ship-it?tab=repositories"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="contact-social-item">
+
+                    <span>GITHUB</span>
+                    <strong>GitHub</strong>
+                    <b>↗</b>
+                </a>
+
+                <a href="https://www.linkedin.com/in/khalid-abdullah-491530381/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="contact-social-item">
+
+                    <span>PROFESSIONAL</span>
+                    <strong>LinkedIn</strong>
+                    <b>↗</b>
+                </a>
+
+                <a href="https://instagram.com/abdkhalid___"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="contact-social-item">
+
+                    <span>SOCIAL</span>
+                    <strong>Instagram</strong>
+                    <b>↗</b>
+                </a>
+
+                <a href="mailto:abdkhalidabdullah123@gmail.com"
+"
+                   class="contact-social-item">
+
+                    <span>CONTACT</span>
+                    <strong>Email Me</strong>
+                    <b>↗</b>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==============================
+             RIGHT — DM CHAT WINDOW
+        ============================== -->
+
+      
+<!-- ==========================================
+     RIGHT SIDE — IPHONE DM CHAT
+========================================== -->
+
+<div class="contact-right">
+
+    <div class="iphone-frame">
+
+        <!-- Phone side buttons -->
+        <span class="iphone-side-button iphone-volume"></span>
+        <span class="iphone-side-button iphone-power"></span>
+
+        <!-- Phone screen -->
+        <div class="iphone-screen">
+
+            <!-- Dynamic Island -->
+            <div class="iphone-island" aria-hidden="true">
+                <span class="iphone-camera"></span>
+            </div>
+
+            <!-- Existing interactive DM -->
+            <div class="dm-window">
+
+                <!-- CHAT HEADER -->
+                <div class="dm-header">
+
+                    <div class="dm-avatar">K</div>
+
+                    <div class="dm-profile">
+                        <strong>Khalid Abdullah</strong>
+
+                        <span>
+                            <i class="dm-status-dot"></i>
+                            Portfolio Messages
+                        </span>
+                    </div>
+
+                    <span class="dm-header-icon">•••</span>
+
+                </div>
+
+                <!-- CHAT MESSAGES -->
+                <div class="dm-messages" id="dmMessages">
+
+                    <div class="dm-day">
+                        START A CONVERSATION
+                    </div>
+
+                    <div class="dm-bubble dm-received">
+                        Hey there! 👋
+                    </div>
+
+                    <div class="dm-bubble dm-received">
+                        Welcome to my portfolio.
+                        Have a project or an idea?
+                        Drop me a message!
+                    </div>
+
+                </div>
+
+                <!-- MESSAGE FORM -->
+                <form class="dm-form" id="dmForm">
+
+                    <div class="dm-visitor-fields">
+
+                        <input
+                            type="text"
+                            id="dmName"
+                            name="name"
+                            placeholder="Your name"
+                            autocomplete="name"
+                            aria-label="Your name"
+                            required
+                        >
+
+                        <input
+                            type="email"
+                            id="dmEmail"
+                            name="email"
+                            placeholder="Your email"
+                            autocomplete="email"
+                            aria-label="Your email"
+                            required
+                        >
+
+                        <input
+                            type="tel"
+                            id="dmPhone"
+                            name="phone"
+                            placeholder="Phone (optional)"
+                            autocomplete="tel"
+                            aria-label="Phone number, optional"
+                        >
+
+                    </div>
+
+                    <!-- MESSAGE COMPOSER -->
+                    <div class="dm-composer">
+
+                        <textarea
+                            id="dmInput"
+                            placeholder="Type a message..."
+                            aria-label="Your message"
+                            rows="1"
+                            required
+                        ></textarea>
+
+                        <button
+                            type="submit"
+                            class="dm-send"
+                            aria-label="Draft message"
+                        >
+                            ➤
+                        </button>
+
+                    </div>
+
+                    <p class="dm-note">
+                        Opens an email draft for sending.
+                    </p>
+
+                    <p
+                        class="dm-feedback"
+                        id="dmFeedback"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
+
+                </form>
+
+            </div>
+
+            <!-- Home indicator -->
+            <div class="iphone-home-indicator"
+                 aria-hidden="true"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- FOOTER -->
+
+    <footer class="portfolio-footer">
+
+        <div class="footer-identity">
+            <span class="footer-name">
+                KHALID <span>ABDULLAH.</span>
+            </span>
+            <span class="footer-role">
+                SOFTWARE ENGINEER & DEVELOPER
+            </span>
+        </div>
+
+        <div class="footer-bottom">
+
+            <span>
+                © <span id="footer-year">2026</span>
+                Khalid Abdullah. All rights reserved.
+            </span>
+
+            <a href="#home" class="back-to-top">
+                BACK TO TOP ↑
+            </a>
+
+        </div>
+
+    </footer>
+
+</section>
+
+
+
+
+
+    <!-- ==========================================
+         PROJECT 01 — ON-PAGE POPUP INTERACTION
+    ========================================== -->
+    <script>
+        (() => {
+            const dialog = document.getElementById('sortingProjectDialog');
+            const trigger = document.querySelector('.sorting-project-trigger');
+            if (!dialog || !trigger) return;
+            const close = () => dialog.close();
+            trigger.addEventListener('click', () => dialog.showModal());
+            dialog.querySelector('.sorting-project-close').addEventListener('click', close);
+            dialog.querySelector('.sorting-project-done').addEventListener('click', close);
+            dialog.addEventListener('click', (event) => {
+                if (event.target === dialog) close();
+            });
+        })();
+    </script>
+
+</body>
+</html>
